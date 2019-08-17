@@ -2,5 +2,5 @@
 postgresql = {'host'  : 'localhost',
               'port'  : 5432,
               'user'  : 'postgres',	
-              'passwd': 'postgres',
+              'passwd': 'Douglas11',
               'db'    : 'etl_project'}

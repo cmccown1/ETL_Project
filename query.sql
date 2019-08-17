@@ -3,18 +3,20 @@
 -------------------------------------------------------------
 CREATE DATABASE etl_project
 
--------------------------------------------------------------
+------------------------------------------------------------------------------------
 --STEP 2: run all the ETL processes from jupyter notebooks, Python files, etc.
--------------------------------------------------------------
+------------------------------------------------------------------------------------
 --DROP TABLE abbr;
 --DROP TABLE unemployment;
 --DROP TABLE complaints;
 --DROP VIEW uvwComplaints;
 
 -- test import
-SELECT * FROM abbr; --replace this with Mohamed's version
+SELECT * FROM "State_Abreviation";
+SELECT * FROM "GDP";
 SELECT * FROM unemployment;
 SELECT * FROM complaints;
+SELECT * FROM consumer_debt;
 
 
 -------------------------------------------------------------
@@ -22,7 +24,7 @@ SELECT * FROM complaints;
 -- add primary keys
 -- convert datatypes where necessary
 -------------------------------------------------------------
-ALTER TABLE abbr ADD PRIMARY KEY("abbr");
+ALTER TABLE "State_Abreviation" ADD PRIMARY KEY("Abreviation");
 ALTER TABLE unemployment ADD PRIMARY KEY("state");
 ALTER TABLE complaints ADD PRIMARY KEY("index");
 
@@ -31,14 +33,23 @@ ALTER TABLE complaints ADD PRIMARY KEY("index");
 -------------------------------------------------------------
 CREATE VIEW uvwComplaints AS (
 	SELECT 
-		ab.abbr AS "state",
+		ab."Abbreviation" AS "state",
 		co."State" AS "complaints",
-		un.unemployment_rate
+		un.unemployment_rate,
+		gd."2018" AS "gpd_per_capita",
+		cd."population",
+		cd."auto",
+		cd."creditcard",
+		cd."mortgage",
+		cd."studentloan",
+		cd."total" AS "total_dept"		
 	FROM 
-		abbr ab 
-		JOIN unemployment un ON ab.State = un.State
-		JOIN complaints co ON ab.abbr = co.index
-	);
+		"State_Abreviation" ab 
+		JOIN unemployment un ON UPPER(ab."State") = UPPER(un.State)
+		JOIN complaints co ON UPPER(ab."Abbreviation") = UPPER(co.index)
+		JOIN "GDP" gd ON UPPER(gd."State")= UPPER(ab."State")
+		JOIN "consumer_debt" cd ON UPPER(cd.state) = UPPER(ab."Abbreviation") and cd.year = 2018
+		);
 
 -- test the view
 SELECT * FROM uvwComplaints ORDER BY "state"

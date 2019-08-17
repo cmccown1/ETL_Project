@@ -2,4 +2,5 @@
 cm_password.py
 __pycache__/
 /Data
+config.py
 
